@@ -29,6 +29,8 @@ dependencies {
 	
 	// https://mvnrepository.com/artifact/javax.validation/validation-api
 	implementation 'javax.validation:validation-api:2.0.1.Final'
+	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-hateoas
+	implementation 'org.springframework.boot:spring-boot-starter-hateoas:2.5.6'
 	
 }
 

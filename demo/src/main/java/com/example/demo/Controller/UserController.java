@@ -6,6 +6,8 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +21,9 @@ import com.example.demo.Entity.User;
 import com.example.demo.Exception.UserNotFoundException;
 import com.example.demo.Service.UserDaoService;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;;
+
 @RestController
 public class UserController {
 	@Autowired
@@ -30,12 +35,20 @@ public class UserController {
 	}
 	
 	@GetMapping("/users/{id}")
-	public User retrieveUser(@PathVariable int id) {
+	public EntityModel<User> retrieveUser(@PathVariable int id) {
 		User user = service.findOne(id);
 		if(user == null) {
 			throw new UserNotFoundException(String.format("ID[%s] not fount", id));
 		}
-		return user;
+		
+		// HATEOAS
+		// 현재 리소스와 연관된(호출 가능한) 자원상태 정보를 제공
+		EntityModel<User> model = new EntityModel<>(user);
+		WebMvcLinkBuilder linkTo = linkTo(methodOn(this.getClass()).retrieveAllUsers());
+		model.add(linkTo.withRel("all-users"));
+			
+		
+		return model;
 	}
 	
 	
